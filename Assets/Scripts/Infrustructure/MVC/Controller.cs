@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using VContainer;
-
+﻿
 namespace Infrustructure.MVC
 {
     public abstract class Controller 

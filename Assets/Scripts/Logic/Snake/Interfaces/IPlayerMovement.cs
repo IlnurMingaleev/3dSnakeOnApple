@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace Logic.Snake
+namespace Logic.Snake.Interfaces
 {
     public interface IPlayerMovement
     {

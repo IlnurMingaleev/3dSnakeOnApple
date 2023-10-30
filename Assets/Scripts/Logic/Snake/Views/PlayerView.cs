@@ -1,57 +1,50 @@
-using System.Collections.Generic;
-using System.Linq;
 using Infrustructure.MVC;
-using Infrustructure.Services.Input;
 using UnityEngine;
-
-namespace Logic.Snake
+namespace Logic.Snake.Views
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class PlayerView : View
+    public class PlayerView : View, IPlayerView
     {
-        [SerializeField] private List<PlayerBodyPart> _bodyObjects;
         [SerializeField] SnakeBodyParent _prefabsParent;
+        [SerializeField] public GravityPhysics.Planet _attractorPlanet;
         [SerializeField] private Rigidbody _rigidbody;
-        public SnakeBodyParent prefabsParent
+        public SnakeBodyParent PrefabsParent
         {
             get => _prefabsParent;
-            set => _prefabsParent = value;
         }
-        public Rigidbody rigidbody
+        public Rigidbody Rigidbody
         {
             get => _rigidbody;
-            set => _rigidbody = value;
         }
 
-        public List<PlayerBodyPart> bodyObjects
+        public GravityPhysics.Planet AttractorPlanet
         {
-            get => _bodyObjects;
-            private set => _bodyObjects = value;
+            get => _attractorPlanet;
         }
+
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if(!gameObject.activeInHierarchy)
-                return;
-
-            rigidbody = _rigidbody;
-            prefabsParent = _prefabsParent;
-            bodyObjects = _prefabsParent.GetComponentsInChildren<PlayerBodyPart>().ToList();
+            _rigidbody = GetComponent<Rigidbody>();
+            
 
 
         }
 #endif
-        public void OnEnable()
+       
+        public void InitPlayer(GravityPhysics.Planet planet, SnakeBodyParent parent)
         {
-            prefabsParent = FindObjectOfType<SnakeBodyParent>();
-            rigidbody = _rigidbody;
-            prefabsParent = _prefabsParent;
-            bodyObjects = _prefabsParent.GetComponentsInChildren<PlayerBodyPart>().ToList();
-
+            _attractorPlanet = planet;
+            _prefabsParent = parent;
+        }
+        
+        private void FixedUpdate()
+        {
+            if (_attractorPlanet)
+                _attractorPlanet.Attract(transform);
         }
 
         
-
         
     }
 }

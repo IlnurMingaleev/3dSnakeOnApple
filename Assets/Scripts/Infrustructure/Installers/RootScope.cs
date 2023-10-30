@@ -1,14 +1,19 @@
-﻿using CodeBase.Infrastructure.States;
-using Helpers;
+﻿using Helpers;
 using Infrustructure.Factory;
 using Infrustructure.Services.Input;
 using Infrustructure.StateMachine;
-using Logic.Consumables;
-using Logic.Planet;
-using Logic.Snake;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
+using BodyPartsMovement = Logic.Snake.Controllers.BodyPartsMovement;
+using BootstrapState = Infrustructure.StateMachine.BootstrapState;
+using IBodyPartsMovement = Logic.Snake.Interfaces.IBodyPartsMovement;
+using IGameStateMachine = Infrustructure.StateMachine.IGameStateMachine;
+using IPlayerMovement = Logic.Snake.Interfaces.IPlayerMovement;
+using LoadLevelState = Infrustructure.StateMachine.LoadLevelState;
+using PlayerController = Logic.Snake.Controllers.PlayerController;
+using PlayerModel = Logic.Snake.Models.PlayerModel;
+using PlayerMovement = Logic.Snake.Controllers.PlayerMovement;
 
 namespace Infrustructure.Installers
 {
@@ -42,15 +47,9 @@ namespace Infrustructure.Installers
 
         private void InstallGameObjects(IContainerBuilder builder)
         {
-            //builder.RegisterComponentInNewPrefab(_snakeHead, Lifetime.Singleton);
-            //builder.RegisterComponentInNewPrefab(_snakeHead.gameObject.GetComponent<PlayerController>(),
-             //   Lifetime.Singleton);
-            //builder.RegisterComponentInNewPrefab(_snakeHead.gameObject.GetComponent<GravityBody>(), Lifetime.Singleton);
-            builder.Register<ConsumablesSpawner>(Lifetime.Singleton).As<IConsumablesSpawner>().AsSelf();
-            builder.Register<PlayerBodySpawner>(Lifetime.Singleton).As<IPlayerBodySpawner>().AsSelf();
             builder.Register<BodyPartsMovement>(Lifetime.Singleton).As<IBodyPartsMovement>().AsSelf();
             builder.Register<PlayerModel>(Lifetime.Singleton);
-            //builder.Register<PlayerBodySpawner>(Lifetime.Singleton).AsImplementedInterfaces();
+            
             builder.Register<PlayerMovement>(Lifetime.Singleton).As<IPlayerMovement>().AsSelf();
             builder.Register<PlayerController>(Lifetime.Singleton).AsSelf();
         }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Logic.Planet
+namespace Logic.GravityPhysics
 {
     public class Planet : MonoBehaviour
     {

@@ -1,8 +1,6 @@
 ﻿using Infrustructure.MVC;
-using UniRx;
-using UnityEngine;
 
-namespace Logic.Snake
+namespace Logic.Snake.Models
 {
     public class PlayerModel: Model
     {
@@ -18,13 +16,5 @@ namespace Logic.Snake
         {
             get => _rotationSpeed;
         }
-        /*private ReactiveProperty<Vector3> _moveVector = new ReactiveProperty<Vector3>();
-
-        private IReadOnlyReactiveProperty<Vector3> moveVector => _moveVector;
-
-        public void SetMoveVector(Vector3 value)
-        {
-            _moveVector.Value = value;
-        }*/
     }
 }

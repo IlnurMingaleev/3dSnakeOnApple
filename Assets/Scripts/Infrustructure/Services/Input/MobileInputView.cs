@@ -7,9 +7,8 @@ namespace Infrustructure.Services.Input
         [SerializeField] private VariableJoystick _variableJoystick;
         public VariableJoystick variableJoystick 
         { 
-            get => _variableJoystick; 
-            private set => _variableJoystick = value;
-            
+            get => _variableJoystick;
+
         }
         
         

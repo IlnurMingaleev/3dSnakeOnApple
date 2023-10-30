@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace Logic.Snake
+namespace Logic.Snake.Controllers
 {
-    public class PlayerMovement : IPlayerMovement
+    public class PlayerMovement : Interfaces.IPlayerMovement
     {
         public void Look(Transform transform,Vector3 moveVector, float rotationSpeed)
         {

@@ -1,8 +1,6 @@
 ﻿using Helpers;
-using Infrustructure;
 
-
-namespace CodeBase.Infrastructure.States
+namespace Infrustructure.StateMachine
 {
   public class BootstrapState : IState
   {

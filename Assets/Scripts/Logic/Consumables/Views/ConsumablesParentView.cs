@@ -1,12 +1,12 @@
 using UnityEngine;
 
-namespace Logic.Consumables
+namespace Logic.Consumables.Views
 {
     public class ConsumablesParentView : MonoBehaviour
 
     {
-        [SerializeField] private Planet.Planet _planet;
-        public Planet.Planet planet
+        [SerializeField] private GravityPhysics.Planet _planet;
+        public GravityPhysics.Planet planet
         {
             get => _planet;
         }

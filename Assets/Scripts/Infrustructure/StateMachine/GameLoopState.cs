@@ -1,31 +1,29 @@
-﻿using CodeBase.Infrastructure.States;
-using Logic.Snake;
-using VContainer.Unity;
+﻿using Infrustructure.StateMachine.Data;
+using UnityEngine;
+
 
 namespace Infrustructure.StateMachine
 {
-  public class GameLoopState : IPayloadedState<PlayerController>,IFixedTickable,ITickable
+  public class GameLoopState : IPayloadedState<IDataBetweenStates>
   {
     
     private readonly IGameStateMachine _stateMachine;
-    private PlayerController _playerController;
-    private bool _initialized = false;
-    private bool _startCalled = false;
+    private IDataBetweenStates _dataBetweenStates;
+    private IGameRunner _gameRunner;
     public GameLoopState(IGameStateMachine gameStateMachine)
     {
       _stateMachine = gameStateMachine;
     }
 
-    private void SetPlayerController(PlayerController playerController)
-    {
-      _playerController = playerController;
-    }
+    
 
-    public void Enter(PlayerController payload)
+    
+
+    public void Enter(IDataBetweenStates payload)
     {
-      SetPlayerController(payload);
-      _playerController.Initialize();
-      _startCalled = true;
+      _dataBetweenStates = payload;
+      _gameRunner = Object.FindObjectOfType(typeof(GameRunner)) as GameRunner;
+      if (_gameRunner != null) _gameRunner.Init(_dataBetweenStates);
     }
 
     public void Exit()
@@ -35,31 +33,12 @@ namespace Infrustructure.StateMachine
 
     
     
-    public void FixedTick()
-    { 
-      if (_startCalled)
-      {
-          _playerController.Start();
-          //_startCalled = true;
-          _initialized = true;
-      }
-      if(_initialized)
-      {
-        _playerController.FixedUpdate();
-      }
+    
 
-      
-      
-    }
-
-    public void Tick()
-    {
-      if ( _initialized)
-      {
-        _playerController.Update();
-      }
-    }
+    
 
     
   }
+
+  
 }

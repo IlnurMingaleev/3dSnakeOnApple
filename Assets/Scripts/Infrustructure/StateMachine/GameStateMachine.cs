@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using CodeBase.Infrastructure.States;
 using Infrustructure.Factory;
-using VContainer;
+using Logic.Snake.Controllers;
 
 namespace Infrustructure.StateMachine
 {
@@ -13,20 +12,16 @@ namespace Infrustructure.StateMachine
     private IExitableState _activeState;
     private PrefabInject _prefabInject;
 
-    [Inject]
-    public PrefabInject PrefabInject
-    {
-      get => _prefabInject;
-      set => _prefabInject = value;
-    }
     
     
-    public GameStateMachine(SceneLoader sceneLoader,  PrefabInject prefabInject)
+    
+    public GameStateMachine(SceneLoader sceneLoader, IGameObjectFactory gameObjectFactory,
+      PlayerController playerController)
     {
       _states = new Dictionary<Type, IExitableState>
       {
         [typeof(BootstrapState)] = new BootstrapState(this, sceneLoader),
-        [typeof(LoadLevelState)] = new LoadLevelState(this, sceneLoader, prefabInject),
+        [typeof(LoadLevelState)] = new LoadLevelState(this, sceneLoader, gameObjectFactory,playerController),
         [typeof(GameLoopState)] = new GameLoopState(this),
       };
     }

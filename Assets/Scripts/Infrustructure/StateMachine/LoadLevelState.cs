@@ -1,28 +1,37 @@
-﻿using Infrustructure;
-using Infrustructure.Factory;
-using Infrustructure.StateMachine;
+﻿using Infrustructure.Factory;
+using Infrustructure.StateMachine.Data;
 using Logic.Camera;
-using Logic.Snake;
+using Logic.Consumables.Views;
+using Logic.GravityPhysics;
+using Logic.Snake.Controllers;
+using Logic.Snake.Views;
+using Logic.Tools.Pooling;
 using UnityEngine;
-using VContainer;
-using VContainer.Unity;
 
-namespace CodeBase.Infrastructure.States
+namespace Infrustructure.StateMachine
 {
   public class LoadLevelState : IPayloadedState<string>
   {
-    private const string InitialPointTag = "InitialPoint";
-
     private readonly IGameStateMachine _stateMachine;
     private readonly SceneLoader _sceneLoader;
-    private PrefabInject _prefabInject;
-    
+    private IGameObjectFactory _gameObjectFactory;
+
+    private IGameObjectPool<IPlayerBodyPartView> _bodyPartsPool;
+
+    private IGameObjectPool<IConsumableView> _consumablesPool;
+    private PlayerController _playerController;
+
+    //private IDataBetweenStates _dataBetweenStates;
     public LoadLevelState(IGameStateMachine gameStateMachine,
-      SceneLoader sceneLoader, PrefabInject prefabInject)
+      SceneLoader sceneLoader,
+      IGameObjectFactory gameObjectFactory, 
+      PlayerController playerController)
     {
       _stateMachine = gameStateMachine;
       _sceneLoader = sceneLoader;
-      _prefabInject = prefabInject;
+      _gameObjectFactory = gameObjectFactory;
+      _playerController = playerController;
+      //_dataBetweenStates = dataBetweenStates;
 
     }
 
@@ -30,7 +39,6 @@ namespace CodeBase.Infrastructure.States
     { 
       _sceneLoader.Load(sceneName, OnLoaded);
     }
-
     public void Exit() 
     {
     }
@@ -38,28 +46,37 @@ namespace CodeBase.Infrastructure.States
 
     private void OnLoaded()
     {
-      GameObject snakeHead =Object.Instantiate(
-        Resources.Load(AssetPath._snakeHead, typeof(GameObject))) as GameObject;
-      //GameObject hud = Object.Instantiate(
-        //Resources.Load(AssetPath.HudPath, typeof(GameObject))) as GameObject;
-      //GameObject camera = Object.Instantiate(
-        //Resources.Load(AssetPath.CameraPath, typeof(GameObject))) as GameObject;
-
-      //GameObject hero = null;
-      _prefabInject.InjectGameObject(snakeHead);
-      //_prefabInject.InjectGameObject(hud);
-      //_prefabInject.InjectGameObject(camera);
+      //Scene dependencies
+      ConsumablesParentView consumablesParentView = Object.FindObjectOfType(typeof(ConsumablesParentView)) as ConsumablesParentView;
+      Planet planet = Object.FindObjectOfType(typeof(Planet)) as Planet;
+      SnakeBodyParent snakeBodyParent = Object.FindObjectOfType(typeof(SnakeBodyParent)) as SnakeBodyParent;
+      GameObject snakeHead = _gameObjectFactory.Create(
+        AssetPath._snakeHead,
+        (Transform) Object.FindObjectOfType(typeof(PlayerHeadParent)), true);
+      snakeHead.GetComponent<PlayerView>().InitPlayer(planet,snakeBodyParent);
+      _consumablesPool = new ConsuamblesPool(_gameObjectFactory,consumablesParentView, planet);
+      _playerController.Initialize(snakeHead.GetComponent<PlayerView>());
+      _bodyPartsPool = new PlayerBodyPartsPool(_gameObjectFactory,_playerController, snakeBodyParent);
       
-      
+      IConsumableView currentConsumable = _consumablesPool.Get(()=>
+      {
+        _consumablesPool.ReturnAll();
+        IPlayerBodyPartView playerBodyPartView = _bodyPartsPool.Get();
+        _playerController.AddBodyPart(_bodyPartsPool.GetPoolElementsAsList(),playerBodyPartView);
+      });
       
       if (snakeHead != null)
       {
         CameraFollow(snakeHead);  
       }
-      _stateMachine.Enter<GameLoopState, PlayerController>(_prefabInject._objectResolver.Resolve<PlayerController>());
+
+      DataBetweenStates dataBetweenStates = new DataBetweenStates( ref _bodyPartsPool, ref _consumablesPool, ref _playerController,  ref currentConsumable);
+      _stateMachine.Enter<GameLoopState, IDataBetweenStates>(dataBetweenStates);
     }
 
     public void CameraFollow(GameObject player) =>
       Camera.main.GetComponent<CameraFollow>().Follow(player);
+    
   }
+  
 }

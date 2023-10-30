@@ -1,26 +1,27 @@
 ﻿using System.Collections.Generic;
 using Helpers;
+using Logic.Snake.Views;
 using UnityEngine;
 
-namespace Logic.Snake
+namespace Logic.Snake.Controllers
 {
-    public class BodyPartsMovement : IBodyPartsMovement
+    public class BodyPartsMovement : Interfaces.IBodyPartsMovement
     {
 
-        public void Move(GameObject go, List<PlayerBodyPart> bodyObjects)
+        public void Move(GameObject go, List<IPlayerBodyPartView> playerBodyParts)
         {
-            if (bodyObjects != null)
+            if (playerBodyParts != null)
             {
-                for (var index = 0; index < bodyObjects.Count; index++)
+                for (var index = 0; index < playerBodyParts.Count; index++)
                 {
-                    var bodyObject = bodyObjects[index];
+                    var bodyObject = playerBodyParts[index];
                     var followObject = go;
 
-                    bodyObject.transform.LookAt(followObject.transform);
-                    if (Vector3.Distance(bodyObject.transform.position, followObject.transform.position) >
+                    bodyObject.Transform.LookAt(followObject.transform);
+                    if (Vector3.Distance(bodyObject.Transform.position, followObject.transform.position) >
                         Constants._distance)
-                        bodyObject.rigidbody.MovePosition(bodyObject.rigidbody.position +
-                                                          bodyObject.transform.forward *
+                        bodyObject.Rigidbody.MovePosition(bodyObject.Rigidbody.position +
+                                                          bodyObject.Transform.forward *
                                                           (Constants._five * Time.fixedDeltaTime));
                 }
             }

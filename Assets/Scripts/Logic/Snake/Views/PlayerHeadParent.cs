@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Logic.Snake
+namespace Logic.Snake.Views
 {
     public class PlayerHeadParent: MonoBehaviour
     {

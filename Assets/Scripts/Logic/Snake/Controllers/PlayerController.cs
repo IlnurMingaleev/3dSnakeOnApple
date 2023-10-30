@@ -1,90 +1,65 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Helpers;
 using Infrustructure.Factory;
 using Infrustructure.MVC;
 using Infrustructure.Services.Input;
-using Logic.Consumables;
-using UniRx;
-using UniRx.Triggers;
+using Logic.Snake.Interfaces;
+using Logic.Snake.Views;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
-using VContainer;
-using VContainer.Unity;
-using Object = UnityEngine.Object;
 
-namespace Logic.Snake
+namespace Logic.Snake.Controllers
 {
-    public class PlayerController : Controller, IDisposable
+    public class PlayerController : Controller,IInitialize
     {
-        private IConsumablesSpawner _consumablesSpawner;
+        //private IConsumablesSpawner _consumablesSpawner;
         private IInputService _inputService;
-        private IBodyPartsMovement _playerBodyPartsMovement;
-        private IPlayerBodySpawner _playerBodySpawner;
-        private IPlayerMovement _playerMovement;
-        private readonly CompositeDisposable _disposable = new CompositeDisposable();
+        private Interfaces.IPlayerMovement _playerMovement;
+        private IBodyPartsMovement _bodyPartsMovement;
 
         private PrefabInject _prefabInject;
         
         private Vector3 _moveVector;
 
-        public PlayerController(PlayerModel playerModel, IBodyPartsMovement playerBodyPartsMovement,
-            IPlayerBodySpawner playerBodySpawner, IPlayerMovement playerMovement, PrefabInject prefabInject,
-            IConsumablesSpawner consumablesSpawner)
+        public PlayerController(Models.PlayerModel playerModel, 
+            Interfaces.IPlayerMovement playerMovement, IBodyPartsMovement bodyPartsMovement)
         {
             _model = playerModel;
-            _consumablesSpawner = consumablesSpawner;
             _inputService = InputService();
-            _playerBodyPartsMovement = playerBodyPartsMovement;
-            _playerBodySpawner = playerBodySpawner;
+            _bodyPartsMovement = bodyPartsMovement;
             _playerMovement = playerMovement;
-            _prefabInject = prefabInject;
+            
 
         }
-        /*[Inject]
-        public void Construct(PlayerModel playerModel, IBodyPartsMovement playerBodyPartsMovement, IPlayerBodySpawner playerBodySpawner, IPlayerMovement playerMovement, PrefabInject prefabInject, IConsumablesSpawner consumablesSpawner)
-        {
-            _model = playerModel;
-            _consumablesSpawner = consumablesSpawner;
-            
-            _playerBodyPartsMovement =  playerBodyPartsMovement;
-            _playerBodySpawner = playerBodySpawner;
-            _playerMovement = playerMovement;
-            _prefabInject = prefabInject;
-            _moveVector = ((PlayerView) _view).transform.forward;
-        }*/
 
-        public void Initialize()
+        public void Initialize(View view)
         {
-            _consumablesSpawner.Initialize();
-            _view = Object.FindObjectOfType<PlayerView>().GetComponent<PlayerView>();
+            _view = view;
             _inputService = InputService();
             _moveVector = ((PlayerView) _view).transform.forward;
             
         }
 
-        public void Start()
-        {
-            ((PlayerView) _view).gameObject.OnCollisionEnterAsObservable().Subscribe(collision => 
-                _playerBodySpawner.RespawnConsumable(collision,((PlayerView)_view).bodyObjects, _consumablesSpawner)).AddTo(_disposable);
-        }
+        
 
 
         public void FixedUpdate()
         {
-            if(((PlayerView)_view).bodyObjects!= null) _playerBodyPartsMovement.Move(((PlayerView)_view).gameObject,((PlayerView)_view).bodyObjects);
-            _playerMovement.Look(_view.transform,_moveVector, ((PlayerModel)_model).moveSpeed);
+            _playerMovement.Look(_view.transform,_moveVector, ((Models.PlayerModel)_model).moveSpeed);
+        }
+
+        public void MoveBodyParts(List<IPlayerBodyPartView> playerBodyParts)
+        {
+            _bodyPartsMovement.Move(((PlayerView)_view).gameObject, playerBodyParts);
         }
 
         public void Update()
         {
             GatherInput(_inputService);
-            _playerMovement.MovePlayer(((PlayerView)_view).rigidbody,((PlayerView)_view).transform,((PlayerModel)_model).moveSpeed);
+            _playerMovement.MovePlayer(((Views.PlayerView)_view).Rigidbody,((Views.PlayerView)_view).transform,((Models.PlayerModel)_model).moveSpeed);
         }
-
-        public void Dispose()
-        {
-            _disposable.Clear();
-        }
-
+        
 
         private void GatherInput(IInputService inputService)
         {
@@ -104,6 +79,19 @@ namespace Logic.Snake
                 
             }
             
+        }
+        public void AddBodyPart(List<IPlayerBodyPartView> bodyObjects, IPlayerBodyPartView  bodyPart)
+        {
+            var lastTransform = bodyObjects.Count > 0 ? bodyObjects.Last().Transform : ((PlayerView)_view).transform;
+        
+            
+            bodyPart.Transform.position = lastTransform.position -lastTransform.forward * Constants._distance;
+        
+            bodyObjects.Add(bodyPart);
+        }
+        public Transform GetPlayerViewTransform()
+        {
+            return ((PlayerView) _view).transform;
         }
     }
 }
