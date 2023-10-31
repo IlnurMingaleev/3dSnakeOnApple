@@ -1,5 +1,4 @@
 
-<video src='[https://www.youtube.com/watch?v=LVayk8kzoqY]' width=180/>
 
 <h1 align="center">3dSnakeOnApple</h1>
 
