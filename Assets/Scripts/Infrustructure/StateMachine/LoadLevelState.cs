@@ -7,6 +7,7 @@ using Logic.Snake.Controllers;
 using Logic.Snake.Views;
 using Logic.Tools.Pooling;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Infrustructure.StateMachine
 {
@@ -16,9 +17,7 @@ namespace Infrustructure.StateMachine
     private readonly SceneLoader _sceneLoader;
     private IGameObjectFactory _gameObjectFactory;
 
-    private IGameObjectPool<IPlayerBodyPartView> _bodyPartsPool;
-
-    private IGameObjectPool<IConsumableView> _consumablesPool;
+    
     private PlayerController _playerController;
 
     //private IDataBetweenStates _dataBetweenStates;
@@ -47,30 +46,23 @@ namespace Infrustructure.StateMachine
     private void OnLoaded()
     {
       //Scene dependencies
-      ConsumablesParentView consumablesParentView = Object.FindObjectOfType(typeof(ConsumablesParentView)) as ConsumablesParentView;
-      Planet planet = Object.FindObjectOfType(typeof(Planet)) as Planet;
-      SnakeBodyParent snakeBodyParent = Object.FindObjectOfType(typeof(SnakeBodyParent)) as SnakeBodyParent;
+      ConsumablesParentView consumablesParentView = Object.FindObjectOfType<ConsumablesParentView>(); 
+      Planet planet = Object.FindObjectOfType<Planet>();
+      SnakeBodyParent snakeBodyParent = Object.FindObjectOfType<SnakeBodyParent>();
       GameObject snakeHead = _gameObjectFactory.Create(
-        AssetPath._snakeHead,
-        (Transform) Object.FindObjectOfType(typeof(PlayerHeadParent)), true);
-      snakeHead.GetComponent<PlayerView>().InitPlayer(planet,snakeBodyParent);
-      _consumablesPool = new ConsuamblesPool(_gameObjectFactory,consumablesParentView, planet);
+        AssetPath._snakeHead,Object.FindObjectOfType<PlayerHeadParent>().transform, true);
       _playerController.Initialize(snakeHead.GetComponent<PlayerView>());
-      _bodyPartsPool = new PlayerBodyPartsPool(_gameObjectFactory,_playerController, snakeBodyParent);
+      snakeHead.GetComponent<PlayerView>().InitPlayer(planet,snakeBodyParent);
       
-      IConsumableView currentConsumable = _consumablesPool.Get(()=>
-      {
-        _consumablesPool.ReturnAll();
-        IPlayerBodyPartView playerBodyPartView = _bodyPartsPool.Get();
-        _playerController.AddBodyPart(_bodyPartsPool.GetPoolElementsAsList(),playerBodyPartView);
-      });
+      
+      
       
       if (snakeHead != null)
       {
         CameraFollow(snakeHead);  
       }
 
-      DataBetweenStates dataBetweenStates = new DataBetweenStates( ref _bodyPartsPool, ref _consumablesPool, ref _playerController,  ref currentConsumable);
+      DataBetweenStates dataBetweenStates = new DataBetweenStates(_playerController,consumablesParentView, snakeBodyParent, planet);
       _stateMachine.Enter<GameLoopState, IDataBetweenStates>(dataBetweenStates);
     }
 

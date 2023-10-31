@@ -8,6 +8,7 @@ namespace Logic.Snake.Views
         [SerializeField] SnakeBodyParent _prefabsParent;
         [SerializeField] public GravityPhysics.Planet _attractorPlanet;
         [SerializeField] private Rigidbody _rigidbody;
+        [SerializeField] private Transform _playerMesh;
         public SnakeBodyParent PrefabsParent
         {
             get => _prefabsParent;
@@ -37,7 +38,9 @@ namespace Logic.Snake.Views
             _attractorPlanet = planet;
             _prefabsParent = parent;
         }
-        
+
+        public Transform PlayerMesh { get => _playerMesh; }
+
         private void FixedUpdate()
         {
             if (_attractorPlanet)

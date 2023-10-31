@@ -6,5 +6,7 @@ namespace Infrustructure.Factory
     {
         GameObject Create(string path);
         GameObject Create(string path, Transform parent, bool worldPositionStays);
+        
+        //GameObject Create(string path, )
     }
 }

@@ -22,7 +22,7 @@ namespace Infrustructure.StateMachine
       {
         [typeof(BootstrapState)] = new BootstrapState(this, sceneLoader),
         [typeof(LoadLevelState)] = new LoadLevelState(this, sceneLoader, gameObjectFactory,playerController),
-        [typeof(GameLoopState)] = new GameLoopState(this),
+        [typeof(GameLoopState)] = new GameLoopState(gameObjectFactory, this),
       };
     }
 

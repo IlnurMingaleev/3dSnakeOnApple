@@ -9,31 +9,28 @@ namespace Infrustructure.StateMachine.Data
     public class DataBetweenStates : IDataBetweenStates
     {
         private IGameObjectPool<IPlayerBodyPartView> _bodyPartsPool;
-        private IGameObjectPool<IConsumableView> _consumablesPool;
+        private ConsuamablesPool _consumablesPool;
         private PlayerController _playerController;
+
+        public ConsumablesParentView ConsumablesParentView => _consumablesParentView;
+
+        public SnakeBodyParent SnakeBodyParent => _snakeBodyParent;
+
         private Planet _planet;
+        private ConsumablesParentView _consumablesParentView;
+        private SnakeBodyParent _snakeBodyParent;
         private IConsumableView _currentConsumable;
 
-        public DataBetweenStates(ref IGameObjectPool<IPlayerBodyPartView> bodyPartsPool,
-             ref IGameObjectPool<IConsumableView> consumablesPool,
-             ref PlayerController playerController, ref IConsumableView currentConsumable)
+        public DataBetweenStates(PlayerController playerController,
+            ConsumablesParentView consumablesParentView, SnakeBodyParent snakeBodyParent, Planet planet)
         {
-            _bodyPartsPool = bodyPartsPool;
-            _consumablesPool = consumablesPool;
+            _consumablesParentView = consumablesParentView;
             _playerController = playerController;
-            _currentConsumable = currentConsumable;
-        }
+            _snakeBodyParent = snakeBodyParent;
+            _planet = planet;
 
-        public IGameObjectPool<IPlayerBodyPartView> BodyPartsPool
-        {
-            get => _bodyPartsPool;
         }
-
-        public IGameObjectPool<IConsumableView> ConsumablesPool
-        {
-            get => _consumablesPool;
-        }
-
+        
         public PlayerController PlayerController
         {
             get => _playerController;
@@ -50,16 +47,7 @@ namespace Infrustructure.StateMachine.Data
         }
 
         #region Setters
-
-        public void SetBodyPartsPool(IGameObjectPool<IPlayerBodyPartView> bodyPartsPool)
-        {
-            _bodyPartsPool = bodyPartsPool;
-        }
         
-        public void SetConsumablesPool(IGameObjectPool<IConsumableView> consumablesPool)
-        {
-            _consumablesPool = consumablesPool;
-        }
         
         public void SetPlayerController(PlayerController playerController)
         {
@@ -75,7 +63,7 @@ namespace Infrustructure.StateMachine.Data
         {
             _currentConsumable = newConsumable;
         }
-
+        
         #endregion
         
         

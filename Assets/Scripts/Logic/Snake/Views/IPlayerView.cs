@@ -8,5 +8,7 @@ namespace Logic.Snake.Views
         Rigidbody Rigidbody { get; }
         GravityPhysics.Planet AttractorPlanet { get; }
         void InitPlayer(GravityPhysics.Planet planet, SnakeBodyParent parent);
+
+        Transform PlayerMesh { get; }
     }
 }

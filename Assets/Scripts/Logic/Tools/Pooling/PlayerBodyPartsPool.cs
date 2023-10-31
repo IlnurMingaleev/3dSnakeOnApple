@@ -12,25 +12,18 @@ namespace Logic.Tools.Pooling
     {
         private SnakeBodyParent _snakeBodyParent;
 
-        public PlayerBodyPartsPool(IGameObjectFactory gameObjectFactory,PlayerController playerController, SnakeBodyParent snakeBodyParent)
+        public PlayerBodyPartsPool(IGameObjectFactory gameObjectFactory, SnakeBodyParent snakeBodyParent)
         {
             _gameObjectFactory = gameObjectFactory;
             _snakeBodyParent = snakeBodyParent;
         }
 
-        public override void Return(IPlayerBodyPartView obj, Action OnReturn = null)
+        public override IPlayerBodyPartView Get()
         {
-            throw new NotImplementedException();
-        }
-
-        public override IPlayerBodyPartView Get(Action OnGet = null)
-        {
-            IPlayerBodyPartView playerBodyPartView = _objects.TryTake(out IPlayerBodyPartView result)
-                ? result
-                : _gameObjectFactory.Create(AssetPath._snakeBody, 
+            IPlayerBodyPartView playerBodyPartView =  _gameObjectFactory.Create(AssetPath._snakeBody, 
                     _snakeBodyParent.transform,
                     true).GetComponent<IPlayerBodyPartView>();
-            
+            _objects.Add(playerBodyPartView);
             return playerBodyPartView;
 
         }

@@ -109,6 +109,7 @@ MonoBehaviour:
   _prefabsParent: {fileID: 0}
   _attractorPlanet: {fileID: 0}
   _rigidbody: {fileID: 5315092494849581229}
+  _playerMesh: {fileID: 635837266564075681}
 --- !u!114 &-7026435771012945618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322,7 +323,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 635837266564075681}
-  - component: {fileID: 3898122751742806450}
+  - component: {fileID: 4060206769792215480}
   m_Layer: 7
   m_Name: Snake_Head
   m_TagString: Untagged
@@ -347,8 +348,8 @@ Transform:
   - {fileID: 2596182003256119190}
   m_Father: {fileID: 4756442265849102184}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &3898122751742806450
-BoxCollider:
+--- !u!136 &4060206769792215480
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -365,9 +366,11 @@ BoxCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.51646066, y: 1, z: 0.6284982}
-  m_Center: {x: 0.018931508, y: 0, z: 0.6575758}
+  serializedVersion: 2
+  m_Radius: 0.32626915
+  m_Height: 1.0247087
+  m_Direction: 2
+  m_Center: {x: 0, y: -0.063510895, z: 0.7187495}
 --- !u!1 &6852727981688263549
 GameObject:
   m_ObjectHideFlags: 0

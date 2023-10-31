@@ -8,13 +8,14 @@ namespace Infrustructure.StateMachine.Data
 {
     public interface IDataBetweenStates
     {
-        IGameObjectPool<IPlayerBodyPartView> BodyPartsPool { get; }
-        IGameObjectPool<IConsumableView> ConsumablesPool { get; }
+
         PlayerController PlayerController { get; }
         Planet Planet { get; }
+        ConsumablesParentView ConsumablesParentView { get; }
+        SnakeBodyParent SnakeBodyParent { get; }
+
         IConsumableView CurrentConsumable { get; }
-        void SetBodyPartsPool(IGameObjectPool<IPlayerBodyPartView> bodyPartsPool);
-        void SetConsumablesPool(IGameObjectPool<IConsumableView> consumablesPool);
+        
         void SetPlayerController(PlayerController playerController);
         void SetPlanet(Planet planet);
         void SetCurrentConsumable(IConsumableView newConsumable);

@@ -31,8 +31,8 @@ namespace Logic.Camera
         private void UpdateCameraPosition()
         {
             if (!_following) return;
-            Vector3 desiredCameraPosition = _following.position - (_following.forward * cameraOffsetFromTarget.z) + (_following.up * cameraOffsetFromTarget.y);
-            transform.position = desiredCameraPosition;
+            transform.position = _following.position + -(_following.forward * cameraOffsetFromTarget.z) 
+                                 + (_following.up * cameraOffsetFromTarget.y);
             if (_shouldLookAtPlayer)
             {
                 _mainCameraTransform.LookAt(_following, _following.up);

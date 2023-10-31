@@ -5,11 +5,13 @@ namespace Logic.Tools.Pooling
 {
     public interface IGameObjectPool<T>
     {
-        List<T> GetPoolElementsAsList();
-        T Get(Action OnGet = null);
-        void Return(T obj, Action OnReturn = null);
+        //List<T> GetPoolElementsAsList();
+        T Get();
+        public List<T> Objects { get; }
 
-        void ReturnAll();
+        //void Return(T obj, Action OnReturn = null);
+
+        //void ReturnAll();
 
     }
 }

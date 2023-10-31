@@ -1,3 +1,4 @@
+using Logic.GravityPhysics;
 using UnityEngine;
 
 namespace Logic.Snake.Views
@@ -7,6 +8,12 @@ namespace Logic.Snake.Views
     public class PlayerBodyPartView : MonoBehaviour,IPlayerBodyPartView
     {
         [SerializeField] private Rigidbody _rigidbody;
+        [SerializeField] private Planet _attractorPlanet;
+
+        public Planet AttractorPlanet
+        {
+            get => _attractorPlanet;
+        }
         public Rigidbody Rigidbody
         {
             get => _rigidbody;
@@ -17,11 +24,27 @@ namespace Logic.Snake.Views
             _rigidbody = GetComponent<Rigidbody>();
         }
 #endif
+        public GameObject GameObject { get => gameObject; }
         public Transform Transform { get => transform; }
 
         public void SetPlayerBodyPartRigidbody(Rigidbody rigidbody)
         {
             _rigidbody = rigidbody;
         }
+        private void FixedUpdate()
+        {
+            if (_attractorPlanet)
+                _attractorPlanet.Attract(transform);
+        }
+
+        #region Setters
+
+        public void SetAttractorPlanet(Planet planet)
+        {
+            _attractorPlanet = planet;
+        }
+
+
+        #endregion
     }
 }

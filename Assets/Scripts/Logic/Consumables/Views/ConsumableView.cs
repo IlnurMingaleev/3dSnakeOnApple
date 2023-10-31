@@ -1,5 +1,6 @@
 using System;
 using Infrustructure.MVC;
+using Logic.GravityPhysics;
 using Logic.Snake;
 using Logic.Snake.Views;
 using UnityEngine;
@@ -12,8 +13,8 @@ namespace Logic.Consumables.Views
         [SerializeField] ConsumablesParentView _prefabsParent;
         [SerializeField] public GravityPhysics.Planet _attractorPlanet;
         [SerializeField] private Rigidbody _rigidbody;
-        private Action _actionOnGet;
-        public Action ActionOnGet
+        private Action<IConsumableView> _actionOnGet;
+        public Action<IConsumableView> ActionOnGet
         {
             get => _actionOnGet;
         }
@@ -33,6 +34,7 @@ namespace Logic.Consumables.Views
         }
 
         public Transform Transform { get => transform; }
+        public GameObject GameObject { get => gameObject; }
 
 #if UNITY_EDITOR
         private void OnValidate()
@@ -46,19 +48,23 @@ namespace Logic.Consumables.Views
 
         #region Setters
 
-        public void Subscribe(Action actionOnGet)
+        public void Subscribe(Action<IConsumableView> actionOnGet)
         {
             _actionOnGet = actionOnGet;
         }
-        
+
+        public void Unsubscribe()
+        {
+            _actionOnGet = null;
+        }
 
         #endregion
        
-        public void InitConsumable(GravityPhysics.Planet planet, ConsumablesParentView parent, Action onReturn = null)
+        public void InitConsumable(GravityPhysics.Planet planet, ConsumablesParentView parent, Action<IConsumableView> onConsumed = null)
         {
             _attractorPlanet = planet;
             _prefabsParent = parent;
-            _actionOnGet = onReturn;
+            _actionOnGet = onConsumed;
         }
         
         
@@ -68,13 +74,22 @@ namespace Logic.Consumables.Views
                 _attractorPlanet.Attract(transform);
         }
 
-        private void OnTriggerEnter(Collider other)
+        private void OnCollisionEnter(Collision collision)
         {
             IPlayerView playerView;
-            if (other.gameObject.TryGetComponent(out playerView))
+            if (collision.gameObject.TryGetComponent(out playerView))
             {
-                _actionOnGet?.Invoke();
+                _actionOnGet?.Invoke(this);
             }
         }
+
+        #region Setters
+
+        public void SetAttractorPlanet(Planet planet)
+        {
+            _attractorPlanet = planet;
+        }
+
+        #endregion
     }
 }

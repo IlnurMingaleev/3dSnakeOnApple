@@ -1,11 +1,12 @@
 ﻿using System;
+using Logic.GravityPhysics;
 using UnityEngine;
 
 namespace Logic.Consumables.Views
 {
     public interface IConsumableView
     {
-        public Action ActionOnGet { get;}
+        public Action<IConsumableView> ActionOnGet { get;}
 
         public ConsumablesParentView PrefabsParent
         {
@@ -26,11 +27,16 @@ namespace Logic.Consumables.Views
             get;
         }
 
+        public GameObject GameObject { get; }
+
         #region Setters
 
-        public void Subscribe(Action actionOnGet);
+        public void Subscribe(Action<IConsumableView> actionOnGet);
 
+        public void Unsubscribe();
+
+        public void SetAttractorPlanet(Planet planet);
         #endregion
-        public void InitConsumable(GravityPhysics.Planet planet, ConsumablesParentView parent, Action onReturn = null);
+        public void InitConsumable(GravityPhysics.Planet planet, ConsumablesParentView parent, Action<IConsumableView> onReturn = null);
     }
 }
