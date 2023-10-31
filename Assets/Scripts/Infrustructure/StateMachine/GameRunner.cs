@@ -9,15 +9,10 @@ using UnityEngine;
 
 namespace Infrustructure.StateMachine
 {
-    public interface IGameRunner
-    {
-        void Init(IDataBetweenStates dataBetweenStates, IGameObjectFactory gameObjectFactory);
-    }
-
     public class GameRunner : MonoBehaviour, IGameRunner
     {
         private IGameObjectPool<IPlayerBodyPartView> _playerBodyParts;
-        private ConsuamablesPool _consumablesPool;
+        private IConsuamablesProvider _consumablesProvider;
         private IDataBetweenStates _dataBetweenStates;
         private bool _initialized;
         private IGameObjectFactory _gameObjectFactory;
@@ -26,16 +21,16 @@ namespace Infrustructure.StateMachine
         {
             _dataBetweenStates = dataBetweenStates;
             _gameObjectFactory = gameObjectFactory;
-            _consumablesPool = new ConsuamablesPool(gameObjectFactory,_dataBetweenStates.ConsumablesParentView,_dataBetweenStates.Planet);
+            _consumablesProvider = new ConsuamablesProvider(gameObjectFactory,_dataBetweenStates.ConsumablesParentView,_dataBetweenStates.Planet);
             _playerBodyParts = new PlayerBodyPartsPool(_gameObjectFactory, dataBetweenStates.SnakeBodyParent);
             
             Action<IConsumableView> OnConsumed = null;
             OnConsumed = (consumedApple) => { 
                 dataBetweenStates.PlayerController
                     .AddBodyPart(_playerBodyParts.Objects,_playerBodyParts);
-                _consumablesPool.Get(OnConsumed, consumedApple);
+                _consumablesProvider.Get(OnConsumed, consumedApple);
             };
-            _consumablesPool.Init(OnConsumed);
+            _consumablesProvider.Init(OnConsumed);
             _initialized = true;
         }
         
@@ -44,14 +39,8 @@ namespace Infrustructure.StateMachine
         {
             if (_initialized)
             {
-                
                 _dataBetweenStates.PlayerController.FixedUpdate(_playerBodyParts.Objects);
-                //_dataBetweenStates.PlayerController.MoveBodyParts(
-                //    _playerBodyParts.Objects);
-                
             }
-
-            
         }
 
         private void Update()

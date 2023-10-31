@@ -28,8 +28,6 @@ namespace Logic.Snake.Views
         {
             _rigidbody = GetComponent<Rigidbody>();
             
-
-
         }
 #endif
        

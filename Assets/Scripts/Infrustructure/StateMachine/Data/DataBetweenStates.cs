@@ -9,7 +9,7 @@ namespace Infrustructure.StateMachine.Data
     public class DataBetweenStates : IDataBetweenStates
     {
         private IGameObjectPool<IPlayerBodyPartView> _bodyPartsPool;
-        private ConsuamablesPool _consumablesPool;
+        private IConsuamablesProvider _consumablesProvider;
         private PlayerController _playerController;
 
         public ConsumablesParentView ConsumablesParentView => _consumablesParentView;

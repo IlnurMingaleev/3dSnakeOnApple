@@ -23,18 +23,16 @@ namespace Logic.Snake.Controllers
         private IBodyPartsMovement _bodyPartsMovement;
         private Transform _playerMesh;
 
-        private PrefabInject _prefabInject;
-        
         private Vector3 _moveVector;
 
-        public PlayerController(Models.PlayerModel playerModel, 
-            Interfaces.IPlayerMovement playerMovement, IBodyPartsMovement bodyPartsMovement)
+        public PlayerController(
+            PlayerModel playerModel, 
+            IPlayerMovement playerMovement, 
+            IBodyPartsMovement bodyPartsMovement)
         {
             _model = playerModel;
             _bodyPartsMovement = bodyPartsMovement;
             _playerMovement = playerMovement;
-            
-
         }
 
         public void Initialize(View view)
@@ -84,20 +82,17 @@ namespace Logic.Snake.Controllers
         {
             Transform cameraTransform = UnityEngine.Camera.main.transform;
             if (Math.Abs(cameraTransform.forward.z - (-1)) < 0.02f) return;
+            
+            float angleDirection = Mathf.Atan2(_moveVector.x, _moveVector.z) * Mathf.Rad2Deg;
         
-            Vector3 direction = _moveVector;
-        
-            // calculate angle and rotation
-            float angleDirection = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
-        
-            //camera angle difference
+           
             var camDir = ((PlayerView)_view).transform.InverseTransformDirection(cameraTransform.up);
             float camAngle = Mathf.Atan2(camDir.x,camDir.z) * Mathf.Rad2Deg;
             float angle = camAngle + angleDirection;
         
             Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.up);
         
-            // only update rotation if direction greater than zero
+           
             if (_inputService.CanWeCalculateInput())
             {
                 _playerMesh.localRotation = targetRotation;
@@ -106,7 +101,7 @@ namespace Logic.Snake.Controllers
 
         private static IMobileInputService InputService()
         {
-            MobileInputService mobileInputService =  new MobileInputService();
+            IMobileInputService mobileInputService =  new MobileInputService();
             mobileInputService.InitializeJoystick();
             return mobileInputService;
 
@@ -121,10 +116,6 @@ namespace Logic.Snake.Controllers
             bodyPart.Transform.position = lastTransform.position -lastTransform.forward * Constants._distance;
         
             bodyObjects.Add(bodyPart);
-        }
-        public Transform GetPlayerViewTransform()
-        {
-            return ((PlayerView) _view).transform;
         }
     }
 }

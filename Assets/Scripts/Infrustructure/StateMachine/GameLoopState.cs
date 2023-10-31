@@ -16,7 +16,7 @@ namespace Infrustructure.StateMachine
     private IGameObjectPool<IPlayerBodyPartView> _bodyPartsPool;
     private IGameObjectFactory _gameObjectFactory;
 
-    private ConsuamablesPool _consumablesPool;
+    private IConsuamablesProvider _consumablesProvider;
     private IGameRunner _gameRunner;
     public GameLoopState(IGameObjectFactory gameObjectFactory,IGameStateMachine gameStateMachine)
     {

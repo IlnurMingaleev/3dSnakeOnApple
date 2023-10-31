@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace Logic.Tools.Pooling
 {
-    public class ConsuamablesPool 
+    public class ConsuamablesProvider : IConsuamablesProvider
     {
         private ConsumablesParentView _consumablesParent;
         private GravityPhysics.Planet _planet;
@@ -19,7 +19,7 @@ namespace Logic.Tools.Pooling
         public IConsumableView CurrentConsumable { get =>_consumedApple; }
         private float _radius = 27.0f;
 
-        public ConsuamablesPool(IGameObjectFactory gameObjectFactory, ConsumablesParentView consumablesParent, GravityPhysics.Planet planet)
+        public ConsuamablesProvider(IGameObjectFactory gameObjectFactory, ConsumablesParentView consumablesParent, GravityPhysics.Planet planet)
         {
             _gameObjectFactory = gameObjectFactory;
             _consumablesParent = consumablesParent;
