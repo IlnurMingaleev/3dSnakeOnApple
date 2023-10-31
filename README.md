@@ -1,6 +1,6 @@
-
-
 <h1 align="center">3dSnakeOnApple</h1>
+
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/LVayk8kzoqY/0.jpg)](http://www.youtube.com/watch?v=LVayk8kzoqY "3D snake on apple planet")
 
 <h3 align="left">Project Information:</p>
 <p align="left">Test project for Job application.</p>
