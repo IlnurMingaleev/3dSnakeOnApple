@@ -6,7 +6,6 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 using BodyPartsMovement = Logic.Snake.Controllers.BodyPartsMovement;
-using BootstrapState = Infrustructure.StateMachine.BootstrapState;
 using IBodyPartsMovement = Logic.Snake.Interfaces.IBodyPartsMovement;
 using IGameStateMachine = Infrustructure.StateMachine.IGameStateMachine;
 using IPlayerMovement = Logic.Snake.Interfaces.IPlayerMovement;
@@ -25,7 +24,8 @@ namespace Infrustructure.Installers
         {
             DontDestroyOnLoad(this);
             builder.Register<PrefabInject>(Lifetime.Singleton);
-            builder.RegisterComponentInNewPrefab<CoroutineRunner>(_coroutineRunner,Lifetime.Singleton).DontDestroyOnLoad().AsImplementedInterfaces();
+            builder.RegisterComponentInNewPrefab<CoroutineRunner>(_coroutineRunner, Lifetime.Singleton)
+                .DontDestroyOnLoad().AsImplementedInterfaces();
             InstallGameStateMachine(builder);
             builder.Register<SceneLoader>(Lifetime.Singleton);
             builder.Register<StandaloneInputService>(Lifetime.Singleton).AsImplementedInterfaces();
@@ -49,23 +49,24 @@ namespace Infrustructure.Installers
         {
             builder.Register<BodyPartsMovement>(Lifetime.Singleton).As<IBodyPartsMovement>().AsSelf();
             builder.Register<PlayerModel>(Lifetime.Singleton);
-            
+
             builder.Register<PlayerMovement>(Lifetime.Singleton).As<IPlayerMovement>().AsSelf();
             builder.Register<PlayerController>(Lifetime.Singleton).AsSelf();
         }
 
     }
 
-public class RootEntryPoint : IStartable
-{
-[Inject] private GameStateMachine _gameStateMachine;
-public void Start()
-{
-    _gameStateMachine.Enter<LoadLevelState,string>(Constants._gameSceneName);
-}
+    public class RootEntryPoint : IStartable
+    {
+        [Inject] private GameStateMachine _gameStateMachine;
+
+        public void Start()
+        {
+            _gameStateMachine.Enter<LoadLevelState, string>(Constants._gameSceneName);
+        }
 
 
 
 
-}
+    }
 }
